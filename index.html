@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mulberry Shades Bengaluru</title>
     <style>
-        /* Container and button styles */
         .container {
             margin-bottom: 20px;
             padding: 10px;
@@ -16,7 +15,11 @@
             border: none;
             color: white;
             padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
             font-size: 16px;
+            margin: 4px 2px;
             cursor: pointer;
         }
         h2 {
@@ -24,53 +27,38 @@
             text-transform: uppercase;
             color: #FFFFFF;
         }
-
-        /* Unity canvas styles */
+        /* Unity canvas style */
         #unity-canvas {
+            width: 100%;
+            height: 100%;
             background: #231F20;
-            transition: all 0.3s ease;
-        }
-
-        /* Portrait mode centered Unity windowed view */
-        .portrait-fullscreen #unity-canvas {
-            width: 80vw;
-            height: 45vh;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-        }
-
-        /* Landscape fullscreen Unity view */
-        .landscape-fullscreen #unity-canvas {
-            width: 100vw;
-            height: 100vh;
+            position: relative;
+            z-index: 1;
         }
     </style>
 </head>
 <body bgcolor="black">
-    <div class="container" id="title-container">
+    <div class="container" id="division1"></div>
+    <div class="container" id="division2">
         <center><h2>Mulberry Shades Bengaluru Nandi Hills, A Tribute Portfolio Resort</h2></center>
     </div>
     
     <!-- Unity WebGL Canvas -->
-    <div class="container" id="canvas-container">
+    <div class="container" id="division3">
         <center><canvas id="unity-canvas" tabindex="-1"></canvas></center>
     </div>
 
     <!-- Fullscreen Button -->
     <div>
         <center>
-            <button class="button" id="fullscreen-button" onclick="toggleFullscreen();">Toggle Fullscreen</button>
+            <button class="button" onclick="openFullscreen();">Open Unity in Fullscreen Mode</button>
         </center>
     </div>
 
     <!-- Unity Build Script -->
     <script src="Build/Builds.loader.js"></script>
     <script>
-        // Create Unity instance
-        const canvas = document.getElementById("unity-canvas");
+        var canvas = document.getElementById("unity-canvas");
         createUnityInstance(canvas, {
             dataUrl: "Build/Builds.data",
             frameworkUrl: "Build/Builds.framework.js",
@@ -81,38 +69,16 @@
             productVersion: "0.1",
         });
 
-        // Function to handle fullscreen toggling
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.body.requestFullscreen();
-                updateFullscreenState();
-            } else {
-                document.exitFullscreen();
+        // Fullscreen function
+        function openFullscreen() {
+            if (canvas.requestFullscreen) {
+                canvas.requestFullscreen();
+            } else if (canvas.webkitRequestFullscreen) { // Safari compatibility
+                canvas.webkitRequestFullscreen();
+            } else if (canvas.msRequestFullscreen) { // IE11 compatibility
+                canvas.msRequestFullscreen();
             }
         }
-
-        // Update layout based on orientation
-        function updateFullscreenState() {
-            if (window.matchMedia("(orientation: landscape)").matches) {
-                document.body.classList.add("landscape-fullscreen");
-                document.body.classList.remove("portrait-fullscreen");
-            } else {
-                document.body.classList.add("portrait-fullscreen");
-                document.body.classList.remove("landscape-fullscreen");
-            }
-        }
-
-        // Listen to orientation changes
-        window.addEventListener("orientationchange", () => {
-            if (!document.fullscreenElement && window.matchMedia("(orientation: portrait)").matches) {
-                // Exit fullscreen if switching to portrait mode
-                document.exitFullscreen();
-            }
-            updateFullscreenState();
-        });
-
-        // Initial layout check
-        updateFullscreenState();
     </script>
 </body>
 </html>
