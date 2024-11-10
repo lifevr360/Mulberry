@@ -59,6 +59,7 @@
     <script src="Build/Builds.loader.js"></script>
     <script>
         var canvas = document.getElementById("unity-canvas");
+        var isFullscreen = false;
 
         createUnityInstance(canvas, {
             dataUrl: "Build/Builds.data",
@@ -70,34 +71,37 @@
             productVersion: "0.1",
         });
 
-        // Function to toggle fullscreen based on orientation
-        function handleOrientationChange() {
-            if (window.matchMedia("(orientation: portrait)").matches) {
-                // Exit fullscreen in portrait mode
-                if (document.fullscreenElement) {
+        // Function to toggle fullscreen
+        function toggleFullscreen(enterFullscreen) {
+            if (enterFullscreen && !isFullscreen) {
+                if (canvas.requestFullscreen) {
+                    canvas.requestFullscreen();
+                } else if (canvas.webkitRequestFullscreen) { // Safari compatibility
+                    canvas.webkitRequestFullscreen();
+                }
+                isFullscreen = true;
+            } else if (!enterFullscreen && isFullscreen) {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
                     document.exitFullscreen();
                 }
-            } else if (window.matchMedia("(orientation: landscape)").matches) {
-                // Enter fullscreen in landscape mode
-                if (!document.fullscreenElement) {
-                    openFullscreen();
-                }
+                isFullscreen = false;
             }
         }
 
-        // Fullscreen function
-        function openFullscreen() {
-            if (canvas.requestFullscreen) {
-                canvas.requestFullscreen();
-            } else if (canvas.webkitRequestFullscreen) { // Safari compatibility
-                canvas.webkitRequestFullscreen();
-            } else if (canvas.msRequestFullscreen) { // IE11 compatibility
-                canvas.msRequestFullscreen();
+        // Function to check orientation and toggle fullscreen accordingly
+        function checkOrientation() {
+            if (window.matchMedia("(orientation: landscape)").matches) {
+                toggleFullscreen(true); // Enter fullscreen in landscape
+            } else {
+                toggleFullscreen(false); // Exit fullscreen in portrait
             }
         }
 
         // Listen for orientation changes
-        window.addEventListener("orientationchange", handleOrientationChange);
+        window.addEventListener("orientationchange", checkOrientation);
+
+        // Initial check on page load
+        checkOrientation();
     </script>
 </body>
 </html>
