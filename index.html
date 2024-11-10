@@ -1,87 +1,84 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | 360 WebGL</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mulberry Shades Bengaluru</title>
     <style>
-      /* Ensures safe area padding on mobile devices */
-      body {
-        padding-top: env(safe-area-inset-top);
-        padding-right: env(safe-area-inset-right);
-        padding-bottom: env(safe-area-inset-bottom);
-        padding-left: env(safe-area-inset-left);
-        margin: 0;
-        overflow: hidden;
-      }
-      #unity-canvas {
-        background: #231F20;
-        width: 100%;
-        height: 100%;
-        position: fixed;
-      }
-      /* Fullscreen button styling */
-      #fullscreen-button {
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        z-index: 1000;
-      }
+        .container {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .button {
+            background-color: #04AA6D;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        h2 {
+            text-align: center;
+            text-transform: uppercase;
+            color: #FFFFFF;
+        }
+        /* Unity canvas style */
+        #unity-canvas {
+            width: 100%;
+            height: 100%;
+            background: #231F20;
+            position: relative;
+            z-index: 1;
+        }
     </style>
-  </head>
-  <body style="text-align: center;">
-    <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
-    <button id="fullscreen-button" onclick="goFullscreen()">Fullscreen</button>
+</head>
+<body bgcolor="black">
+    <div class="container" id="division1"></div>
+    <div class="container" id="division2">
+        <center><h2>Mulberry Shades Bengaluru Nandi Hills, A Tribute Portfolio Resort</h2></center>
+    </div>
+    
+    <!-- Unity WebGL Canvas -->
+    <div class="container" id="division3">
+        <center><canvas id="unity-canvas" tabindex="-1"></canvas></center>
+    </div>
 
+    <!-- Fullscreen Button -->
+    <div>
+        <center>
+            <button class="button" onclick="openFullscreen();">Open Unity in Fullscreen Mode</button>
+        </center>
+    </div>
+
+    <!-- Unity Build Script -->
     <script src="Build/Builds.loader.js"></script>
     <script>
-      // Detect if on a mobile device and adjust canvas for fullscreen
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile viewport settings for full coverage
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-
-        var canvas = document.querySelector("#unity-canvas");
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.style.position = "fixed";
-
-        document.body.style.textAlign = "left";
-      }
-
-      createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/Builds.data",
-        frameworkUrl: "Build/Builds.framework.js",
-        codeUrl: "Build/Builds.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "360 WebGL",
-        productVersion: "0.1",
-      });
-
-      // Function to enable fullscreen mode
-      function goFullscreen() {
         var canvas = document.getElementById("unity-canvas");
-        if (canvas.requestFullscreen) {
-          canvas.requestFullscreen();
-        } else if (canvas.webkitRequestFullscreen) { // Safari compatibility
-          canvas.webkitRequestFullscreen();
-        } else if (canvas.msRequestFullscreen) { // IE11 compatibility
-          canvas.msRequestFullscreen();
-        }
-      }
+        createUnityInstance(canvas, {
+            dataUrl: "Build/Builds.data",
+            frameworkUrl: "Build/Builds.framework.js",
+            codeUrl: "Build/Builds.wasm",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "DefaultCompany",
+            productName: "360 WebGL",
+            productVersion: "0.1",
+        });
 
-      // Adjust canvas height for mobile landscape orientation changes
-      window.addEventListener("orientationchange", function() {
-        var canvas = document.getElementById("unity-canvas");
-        if (window.innerHeight < window.innerWidth) { // Landscape mode
-          canvas.style.height = "calc(100vh - env(safe-area-inset-bottom))";
-        } else {
-          canvas.style.height = "100%";
+        // Fullscreen function
+        function openFullscreen() {
+            if (canvas.requestFullscreen) {
+                canvas.requestFullscreen();
+            } else if (canvas.webkitRequestFullscreen) { // Safari compatibility
+                canvas.webkitRequestFullscreen();
+            } else if (canvas.msRequestFullscreen) { // IE11 compatibility
+                canvas.msRequestFullscreen();
+            }
         }
-      });
     </script>
-  </body>
+</body>
 </html>
