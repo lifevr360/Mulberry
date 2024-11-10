@@ -91,9 +91,9 @@
         // Function to check orientation and toggle fullscreen accordingly
         function checkOrientation() {
             if (window.matchMedia("(orientation: landscape)").matches) {
-                toggleFullscreen(true); // Enter fullscreen in landscape
+                toggleFullscreen(false); // Enter fullscreen in landscape
             } else {
-                toggleFullscreen(false); // Exit fullscreen in portrait
+                toggleFullscreen(true); // Exit fullscreen in portrait
             }
         }
 
