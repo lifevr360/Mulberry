@@ -51,7 +51,7 @@
     <!-- Fullscreen Button -->
     <div>
         <center>
-            <button class="button" onclick="openFullscreen();">Open Unity in Fullscreen Mode</button>
+            <button class="button" onclick="openFullscreen();">Open Video in Fullscreen Mode</button>
         </center>
     </div>
 
@@ -59,6 +59,7 @@
     <script src="Build/Builds.loader.js"></script>
     <script>
         var canvas = document.getElementById("unity-canvas");
+
         createUnityInstance(canvas, {
             dataUrl: "Build/Builds.data",
             frameworkUrl: "Build/Builds.framework.js",
@@ -68,6 +69,21 @@
             productName: "360 WebGL",
             productVersion: "0.1",
         });
+
+        // Function to toggle fullscreen based on orientation
+        function handleOrientationChange() {
+            if (window.matchMedia("(orientation: portrait)").matches) {
+                // Exit fullscreen in portrait mode
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            } else if (window.matchMedia("(orientation: landscape)").matches) {
+                // Enter fullscreen in landscape mode
+                if (!document.fullscreenElement) {
+                    openFullscreen();
+                }
+            }
+        }
 
         // Fullscreen function
         function openFullscreen() {
@@ -79,6 +95,9 @@
                 canvas.msRequestFullscreen();
             }
         }
+
+        // Listen for orientation changes
+        window.addEventListener("orientationchange", handleOrientationChange);
     </script>
 </body>
 </html>
