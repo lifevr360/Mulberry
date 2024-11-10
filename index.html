@@ -7,6 +7,9 @@
   </head>
   <body style="text-align: center; padding: 0; border: 0; margin: 0;">
     <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
+    <!-- Fullscreen button -->
+    <button id="fullscreen-button" onclick="goFullscreen()" style="position: fixed; top: 10px; right: 10px; z-index: 1000;">Fullscreen</button>
+
     <script src="Build/Builds.loader.js"></script>
     <script>
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
@@ -32,9 +35,19 @@
         companyName: "DefaultCompany",
         productName: "360 WebGL",
         productVersion: "0.1",
-        // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
-        // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       });
+
+      // Function to enable fullscreen mode
+      function goFullscreen() {
+        var canvas = document.getElementById("unity-canvas");
+        if (canvas.requestFullscreen) {
+          canvas.requestFullscreen();
+        } else if (canvas.webkitRequestFullscreen) { // Safari compatibility
+          canvas.webkitRequestFullscreen();
+        } else if (canvas.msRequestFullscreen) { // IE11 compatibility
+          canvas.msRequestFullscreen();
+        }
+      }
     </script>
   </body>
 </html>
