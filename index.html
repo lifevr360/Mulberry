@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mulberry Shades Bengaluru</title>
     <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+        }
         .container {
             margin-bottom: 20px;
             padding: 10px;
@@ -27,31 +32,37 @@
             text-transform: uppercase;
             color: #FFFFFF;
         }
-        /* Unity canvas style */
+        /* Unity canvas style for windowed mode */
         #unity-canvas {
-            width: 100%;
-            height: 100%;
             background: #231F20;
             position: relative;
             z-index: 1;
         }
+        /* Centered container for Unity canvas in portrait mode */
+        #unity-windowed-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100vh;
+        }
     </style>
 </head>
-<body bgcolor="black">
+<body>
     <div class="container" id="division1"></div>
     <div class="container" id="division2">
         <center><h2>Mulberry Shades Bengaluru Nandi Hills, A Tribute Portfolio Resort</h2></center>
     </div>
     
-    <!-- Unity WebGL Canvas -->
-    <div class="container" id="division3">
-        <center><canvas id="unity-canvas" tabindex="-1"></canvas></center>
+    <!-- Centered container for windowed mode in portrait -->
+    <div id="unity-windowed-container">
+        <canvas id="unity-canvas" tabindex="-1"></canvas>
     </div>
 
     <!-- Fullscreen Button -->
     <div>
         <center>
-            <button class="button" onclick="openFullscreen();">Open Video in Fullscreen Mode</button>
+            <button class="button" onclick="toggleFullscreen();">Open Video in Fullscreen Mode</button>
         </center>
     </div>
 
@@ -59,6 +70,7 @@
     <script src="Build/Builds.loader.js"></script>
     <script>
         var canvas = document.getElementById("unity-canvas");
+        var unityContainer = document.getElementById("unity-windowed-container");
         var isFullscreen = false;
 
         createUnityInstance(canvas, {
@@ -71,19 +83,38 @@
             productVersion: "0.1",
         });
 
-        // Function to toggle fullscreen
-        function toggleFullscreen(enterFullscreen) {
-            if (enterFullscreen && !isFullscreen) {
+        // Toggle fullscreen mode based on orientation
+        function toggleFullscreen() {
+            if (window.matchMedia("(orientation: landscape)").matches) {
+                enterFullscreen(); // Landscape: fullscreen mode
+            } else {
+                exitFullscreen(); // Portrait: windowed mode
+                // Center Unity canvas in portrait mode
+                unityContainer.style.display = "flex";
+                canvas.style.width = "80%";
+                canvas.style.height = "80%";
+            }
+        }
+
+        // Enter fullscreen mode
+        function enterFullscreen() {
+            if (!isFullscreen) {
                 if (canvas.requestFullscreen) {
                     canvas.requestFullscreen();
                 } else if (canvas.webkitRequestFullscreen) { // Safari compatibility
                     canvas.webkitRequestFullscreen();
                 }
                 isFullscreen = true;
-            } else if (!enterFullscreen && isFullscreen) {
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    document.exitFullscreen();
-                }
+                unityContainer.style.display = "block"; // Expand canvas in fullscreen mode
+                canvas.style.width = "100%";
+                canvas.style.height = "100%";
+            }
+        }
+
+        // Exit fullscreen mode
+        function exitFullscreen() {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                document.exitFullscreen();
                 isFullscreen = false;
             }
         }
@@ -91,9 +122,9 @@
         // Function to check orientation and toggle fullscreen accordingly
         function checkOrientation() {
             if (window.matchMedia("(orientation: landscape)").matches) {
-                toggleFullscreen(false); // Enter fullscreen in landscape
+                enterFullscreen(); // Enter fullscreen in landscape
             } else {
-                toggleFullscreen(true); // Exit fullscreen in portrait
+                exitFullscreen(); // Exit fullscreen and center in portrait
             }
         }
 
