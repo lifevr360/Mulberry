@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mulberry Shades Bengaluru</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: black;
-        }
+        /* Container and button styles */
         .container {
             margin-bottom: 20px;
             padding: 10px;
@@ -20,11 +16,7 @@
             border: none;
             color: white;
             padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
             font-size: 16px;
-            margin: 4px 2px;
             cursor: pointer;
         }
         h2 {
@@ -32,47 +24,53 @@
             text-transform: uppercase;
             color: #FFFFFF;
         }
-        /* Unity canvas style for windowed mode */
+
+        /* Unity canvas styles */
         #unity-canvas {
             background: #231F20;
-            position: relative;
-            z-index: 1;
+            transition: all 0.3s ease;
         }
-        /* Centered container for Unity canvas in portrait mode */
-        #unity-windowed-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
+
+        /* Portrait mode centered Unity windowed view */
+        .portrait-fullscreen #unity-canvas {
+            width: 80vw;
+            height: 45vh;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        /* Landscape fullscreen Unity view */
+        .landscape-fullscreen #unity-canvas {
+            width: 100vw;
             height: 100vh;
         }
     </style>
 </head>
-<body>
-    <div class="container" id="division1"></div>
-    <div class="container" id="division2">
+<body bgcolor="black">
+    <div class="container" id="title-container">
         <center><h2>Mulberry Shades Bengaluru Nandi Hills, A Tribute Portfolio Resort</h2></center>
     </div>
     
-    <!-- Centered container for windowed mode in portrait -->
-    <div id="unity-windowed-container">
-        <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <!-- Unity WebGL Canvas -->
+    <div class="container" id="canvas-container">
+        <center><canvas id="unity-canvas" tabindex="-1"></canvas></center>
     </div>
 
     <!-- Fullscreen Button -->
     <div>
         <center>
-            <button class="button" onclick="toggleFullscreen();">Open Video in Fullscreen Mode</button>
+            <button class="button" id="fullscreen-button" onclick="toggleFullscreen();">Toggle Fullscreen</button>
         </center>
     </div>
 
     <!-- Unity Build Script -->
     <script src="Build/Builds.loader.js"></script>
     <script>
-        var canvas = document.getElementById("unity-canvas");
-        var unityContainer = document.getElementById("unity-windowed-container");
-        var isFullscreen = false;
-
+        // Create Unity instance
+        const canvas = document.getElementById("unity-canvas");
         createUnityInstance(canvas, {
             dataUrl: "Build/Builds.data",
             frameworkUrl: "Build/Builds.framework.js",
@@ -83,56 +81,38 @@
             productVersion: "0.1",
         });
 
-        // Toggle fullscreen mode based on orientation
+        // Function to handle fullscreen toggling
         function toggleFullscreen() {
-            if (window.matchMedia("(orientation: landscape)").matches) {
-                enterFullscreen(); // Landscape: fullscreen mode
+            if (!document.fullscreenElement) {
+                document.body.requestFullscreen();
+                updateFullscreenState();
             } else {
-                exitFullscreen(); // Portrait: windowed mode
-                // Center Unity canvas in portrait mode
-                unityContainer.style.display = "flex";
-                canvas.style.width = "50%";
-                canvas.style.height = "50%";
-            }
-        }
-
-        // Enter fullscreen mode
-        function enterFullscreen() {
-            if (!isFullscreen) {
-                if (canvas.requestFullscreen) {
-                    canvas.requestFullscreen();
-                } else if (canvas.webkitRequestFullscreen) { // Safari compatibility
-                    canvas.webkitRequestFullscreen();
-                }
-                isFullscreen = true;
-                //unityContainer.style.display = "block"; // Expand canvas in fullscreen mode
-               // canvas.style.width = "100%";
-               // canvas.style.height = "100%";
-            }
-        }
-
-        // Exit fullscreen mode
-        function exitFullscreen() {
-            if (document.fullscreenElement || document.webkitFullscreenElement) {
                 document.exitFullscreen();
-                isFullscreen = false;
             }
         }
 
-        // Function to check orientation and toggle fullscreen accordingly
-        function checkOrientation() {
+        // Update layout based on orientation
+        function updateFullscreenState() {
             if (window.matchMedia("(orientation: landscape)").matches) {
-                enterFullscreen(); // Enter fullscreen in landscape
+                document.body.classList.add("landscape-fullscreen");
+                document.body.classList.remove("portrait-fullscreen");
             } else {
-                exitFullscreen(); // Exit fullscreen and center in portrait
+                document.body.classList.add("portrait-fullscreen");
+                document.body.classList.remove("landscape-fullscreen");
             }
         }
 
-        // Listen for orientation changes
-        window.addEventListener("orientationchange", checkOrientation);
+        // Listen to orientation changes
+        window.addEventListener("orientationchange", () => {
+            if (!document.fullscreenElement && window.matchMedia("(orientation: portrait)").matches) {
+                // Exit fullscreen if switching to portrait mode
+                document.exitFullscreen();
+            }
+            updateFullscreenState();
+        });
 
-        // Initial check on page load
-        //checkOrientation();
+        // Initial layout check
+        updateFullscreenState();
     </script>
 </body>
 </html>
